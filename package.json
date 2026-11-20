@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "newman run collections/restful-booker.postman_collection.json -e environments/restful-booker-prod.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/report.html"
+    "test": "newman run collections/restful-booker.postman_collection.json -e environments/restful-booker-prod.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/report.html",
+    "test:data": "newman run collections/restful-booker.postman_collection.json -e environments/restful-booker-prod.postman_environment.json --folder 'CRUD flow' --iteration-data data/bookings.json -r cli,htmlextra --reporter-htmlextra-export reports/report-data.html"
   },
   "repository": {
     "type": "git",

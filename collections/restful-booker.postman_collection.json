@@ -126,7 +126,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status é 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Reserva criada com os dados enviados\", () => {\n    const body = pm.response.json();\n    pm.expect(body).to.have.property(\"bookingid\");\n    pm.expect(body.booking.firstname).to.eql(\"Mariana\");\n    pm.environment.set(\"bookingId\", body.bookingid);\n});"
+                  "pm.test(\"Status é 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Reserva criada com os dados enviados\", () => {\n    const body = pm.response.json();\n    pm.expect(body).to.have.property(\"bookingid\");\n    pm.expect(body.booking.firstname).to.eql(pm.variables.get(\"bkFirstname\"));\n    pm.environment.set(\"bookingId\", body.bookingid);\n});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const iter = pm.iterationData;\npm.variables.set(\"bkFirstname\", iter.get(\"firstname\") || \"Mariana\");\npm.variables.set(\"bkLastname\", iter.get(\"lastname\") || \"Araujo\");\npm.variables.set(\"bkPrice\", iter.get(\"totalprice\") !== undefined ? iter.get(\"totalprice\") : 150);\npm.variables.set(\"bkDeposit\", iter.get(\"depositpaid\") !== undefined ? iter.get(\"depositpaid\") : true);\npm.variables.set(\"bkCheckin\", iter.get(\"checkin\") || \"2026-12-01\");\npm.variables.set(\"bkCheckout\", iter.get(\"checkout\") || \"2026-12-05\");\npm.variables.set(\"bkNeeds\", iter.get(\"additionalneeds\") || \"Breakfast\");"
                 ]
               }
             }
@@ -141,7 +150,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstname\": \"Mariana\",\n  \"lastname\": \"Araujo\",\n  \"totalprice\": 150,\n  \"depositpaid\": true,\n  \"bookingdates\": {\"checkin\": \"2026-12-01\", \"checkout\": \"2026-12-05\"},\n  \"additionalneeds\": \"Breakfast\"\n}",
+              "raw": "{\n  \"firstname\": \"{{bkFirstname}}\",\n  \"lastname\": \"{{bkLastname}}\",\n  \"totalprice\": {{bkPrice}},\n  \"depositpaid\": {{bkDeposit}},\n  \"bookingdates\": {\"checkin\": \"{{bkCheckin}}\", \"checkout\": \"{{bkCheckout}}\"},\n  \"additionalneeds\": \"{{bkNeeds}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -168,7 +177,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status é 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Dados batem com o que foi criado\", () => {\n    const body = pm.response.json();\n    pm.expect(body.firstname).to.eql(\"Mariana\");\n    pm.expect(body.totalprice).to.eql(150);\n    pm.expect(body.bookingdates.checkin).to.eql(\"2026-12-01\");\n});\nconst bookingSchema = {\n    type: \"object\",\n    required: [\"firstname\", \"lastname\", \"totalprice\", \"depositpaid\", \"bookingdates\"],\n    properties: {\n        firstname: { type: \"string\" },\n        lastname: { type: \"string\" },\n        totalprice: { type: \"number\" },\n        depositpaid: { type: \"boolean\" },\n        bookingdates: {\n            type: \"object\",\n            required: [\"checkin\", \"checkout\"],\n            properties: {\n                checkin: { type: \"string\" },\n                checkout: { type: \"string\" }\n            }\n        },\n        additionalneeds: { type: \"string\" }\n    }\n};\n\npm.test(\"Resposta segue o schema esperado\", () => {\n    pm.response.to.have.jsonSchema(bookingSchema);\n});"
+                  "pm.test(\"Status é 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Dados batem com o que foi criado\", () => {\n    const body = pm.response.json();\n    pm.expect(body.firstname).to.eql(pm.variables.get(\"bkFirstname\") || \"Mariana\");\n    pm.expect(body.totalprice).to.eql(Number(pm.variables.get(\"bkPrice\") || 150));\n    pm.expect(body.bookingdates.checkin).to.eql(pm.variables.get(\"bkCheckin\") || \"2026-12-01\");\n});\nconst bookingSchema = {\n    type: \"object\",\n    required: [\"firstname\", \"lastname\", \"totalprice\", \"depositpaid\", \"bookingdates\"],\n    properties: {\n        firstname: { type: \"string\" },\n        lastname: { type: \"string\" },\n        totalprice: { type: \"number\" },\n        depositpaid: { type: \"boolean\" },\n        bookingdates: {\n            type: \"object\",\n            required: [\"checkin\", \"checkout\"],\n            properties: {\n                checkin: { type: \"string\" },\n                checkout: { type: \"string\" }\n            }\n        },\n        additionalneeds: { type: \"string\" }\n    }\n};\n\npm.test(\"Resposta segue o schema esperado\", () => {\n    pm.response.to.have.jsonSchema(bookingSchema);\n});"
                 ]
               }
             }
