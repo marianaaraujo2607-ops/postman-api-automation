@@ -1,0 +1,5 @@
+[
+  {"firstname": "Ana", "lastname": "Silva", "totalprice": 120, "depositpaid": true, "checkin": "2026-12-10", "checkout": "2026-12-12", "additionalneeds": "Breakfast"},
+  {"firstname": "Bruno", "lastname": "Costa", "totalprice": 300, "depositpaid": false, "checkin": "2027-01-05", "checkout": "2027-01-10", "additionalneeds": "Late checkout"},
+  {"firstname": "Carla", "lastname": "Souza", "totalprice": 80, "depositpaid": true, "checkin": "2027-02-01", "checkout": "2027-02-02", "additionalneeds": "Parking"}
+]
